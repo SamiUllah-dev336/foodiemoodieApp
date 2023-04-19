@@ -1,9 +1,8 @@
-import React,{useEffect} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-
+// imported screens
 import HomeScreen from './Home';
 import LoginScreen from './login';
 import SignUpScreen from './SignUp';
@@ -13,11 +12,9 @@ import CategoryScreen from './Category';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
-
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown:false }}>
 
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="login" component={LoginScreen}/>
@@ -34,11 +31,4 @@ export default function App() {
 
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+

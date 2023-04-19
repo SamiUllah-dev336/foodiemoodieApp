@@ -3,8 +3,10 @@ import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {db,app} from './firebase';
 import firestore from '@react-native-firebase/firestore';
+
 //import {collection,add, addDoc} from 'firebase/firestore';
 import { getDatabase, ref, onValue, set, update } from "firebase/database";
+import Header from './header';
 
 import {
   getFirestore,
@@ -74,7 +76,45 @@ const popular=[
 //   }
 // })}
         
-    const collecArray=(collec)=>{
+    
+
+    
+
+    //   snapshot.forEach((doc) => {
+    //   console.log(doc.id, '=>', doc.data());
+    // });
+
+
+
+export default function FavouriteScreen({navigation,route}) {
+ 
+//  React.useEffect(()=>{
+//   fetchData();
+// },[])
+const collecArray1=(collec)=>{
+  const snapshot = collection(db, collec);   // or getFirestore() replace by db
+  
+  //console.log(ref);
+  const arr=new Array;
+  const q = query(snapshot,ref)           // it can work without ref
+  onSnapshot(q, snapshot=>{
+    // console.log('Fetched', snapshot.docs)
+    snapshot.docs.forEach(doc=>{
+      
+
+      if(doc.data().email==global.user){
+        console.log(doc.data().email);  
+        console.log(doc.data().name);  
+               
+        setName(doc.data().name);
+      }
+    })
+  }
+  )
+  
+}
+
+  const collecArray=(collec)=>{
     const snapshot = collection(db, collec);   // or getFirestore() replace by db
     //console.log(ref);
     const arr=new Array;
@@ -90,21 +130,10 @@ const popular=[
     return arr;
   }
 
-    
-
-    //   snapshot.forEach((doc) => {
-    //   console.log(doc.id, '=>', doc.data());
-    // });
-
-
-
-export default function FavouriteScreen({navigation}) {
- 
-//  React.useEffect(()=>{
-//   fetchData();
-// },[])
+  collecArray1("user");
   
 
+  const [Name,setName]=useState("");
   const [Category,setCategory]=useState(collecArray('foodCategory'))
   const [PopularFood , setPopularFood] = useState(collecArray('popularFood'));
 
@@ -120,11 +149,11 @@ export default function FavouriteScreen({navigation}) {
 
     <View style={{flex:0.25,marginBottom:10}}>
     <View style={{flex:0.3,justifyContent:'flex-end'}}>
-     <Icon name={'angle-left'} size={30} onPress={GoBackfunc} style={{marginLeft:10}}/> 
+    <Header head="Favourites" navigation={navigation}/>  
     </View>
     
     <View style={{marginBottom:3,flex:0.2,justifyContent:'flex-end'}}>
-    <Text style={{fontWeight:'bold',fontSize:15,marginRight:10,marginLeft:10}}>Hello SAMIULLAH!</Text>
+    <Text style={{fontWeight:'bold',fontSize:15,marginRight:10,marginLeft:10}}>Hello {Name}</Text>
     </View>
 
     
@@ -181,6 +210,9 @@ export default function FavouriteScreen({navigation}) {
     horizontal={true}
     keyExtractor={item=>item.key}
     renderItem={({item})=>(
+     <TouchableOpacity onPress={()=>{
+                                navigation.navigate("Category",{data :item});
+                                }}>
      <View style={styles.mainCategory}>
      <View>
      <Image source={{uri:item.image1}} style={{height:30,width:30,marginRight:5}} />
@@ -190,7 +222,7 @@ export default function FavouriteScreen({navigation}) {
 
      </View>
      </View>
-
+     </TouchableOpacity>
     )}  
     />
    
@@ -198,7 +230,7 @@ export default function FavouriteScreen({navigation}) {
 
    <View  style={{flex:0.35}}>
     
-    <View style={{flexDirection:"row",marginBottom:10,justifyContent:"space-between"}}>
+      <View style={{flexDirection:"row",marginBottom:10,justifyContent:"space-between"}}>
       <Text style={{fontWeight:'bold',fontSize:15,marginLeft:10}}>Popular Food</Text>
       <TouchableOpacity>
       <Text style={{fontWeight:'bold',fontSize:15,marginRight:10}}>See All</Text>
@@ -336,7 +368,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#FAF9F6',
-    padding: 2,
+    padding: 5,
   },
   mainCategory:{
     flex:1,
